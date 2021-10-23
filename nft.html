@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>three.js 3D Model Loader</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<link type="text/css" rel="stylesheet" href="main.css">
+	<style>
+		body {
+			background-color: #bfe3dd;
+			color: #000;
+		}
+		
+		a {
+			color: #2983ff;
+		}
+	</style>
+</head>
+
+<body>
+	
+	<script type="module">
+		const gltfLoader = new GLTFLoader();
+		const url = 'models/gltf/item/scene.gltf';
+		gltfLoader.load(url, (gltf) => {
+			const root = gltf.scene;
+			scene.add(root);
+
+			/**
+			//Other methods(?) to use...
+			See: https://threejs.org/docs/#examples/en/loaders/GLTFLoader
+
+			gltf.animations; // Array<THREE.AnimationClip>
+			gltf.scene; // THREE.Group
+			gltf.scenes; // Array<THREE.Group>
+			gltf.cameras; // Array<THREE.Camera>
+			gltf.asset; // Object
+			 */
+		});
+	</script>
+							
+</body>
+			
+</html> 
