@@ -20,6 +20,9 @@
 <body>
 	
 	<script type="module">
+
+		import { GLTFLoader } from '/jsm/loaders/GLTFLoader.js';
+
 		const gltfLoader = new GLTFLoader();
 		const url = 'models/gltf/item/scene.gltf';
 		gltfLoader.load(url, (gltf) => {
