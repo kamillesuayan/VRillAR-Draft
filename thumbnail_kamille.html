@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>three.js webgl - animation - keyframes</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<link type="text/css" rel="stylesheet" href="main.css">
+	<style>
+		body {
+			background-color: #bfe3dd;
+			color: #000;
+		}
+		
+		a {
+			color: #2983ff;
+		}
+	</style>
+</head>
+
+<body>
+	
+	<div id="container"></div>
+	
+	<script type="module">
+		//https://threejs.org/docs/#manual/en/introduction/Loading-3D-models
+		import * as THREE from './three.js-master/build/three.module.js';
+        import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
+        import { OrbitControls } from './jsm/controls/OrbitControls.js';
+			
+		let scene, camera, renderer, controls, axis, directionalLight;
+        let windowHalfX = window.innerWidth/2;
+        let windowHalfY = window.innerHeight/2;
+        var strDownloadMime = "image/octet-stream";
+        var counter = 12;
+        var x_pos = 5;
+        var rot = 0;
+        
+
+    function init() {
+        //Scenes allow you to set up what and where is to be rendered by three.js. 
+        var saveLink = document.createElement('div');
+        saveLink.style.position = 'absolute';
+        saveLink.style.top = '10px';
+        saveLink.style.width = '100%';
+        saveLink.style.color = 'white !important';
+        saveLink.style.textAlign = 'center';
+        saveLink.innerHTML =
+            '<a href="#" id="saveLink">Save Frame</a>';
+        document.body.appendChild(saveLink);
+        document.getElementById("saveLink").addEventListener('click', saveAsImage);
+        
+
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xdddddd);
+
+		camera = new THREE.PerspectiveCamera(10,window.innerWidth/window.innerHeight,1,100);
+		camera.position.set( 5, 0, 8 );
+
+        //The WebGL renderer displays scenes using WebGL.
+        renderer = new THREE.WebGLRenderer({antialias:true,  preserveDrawingBuffer: true});
+        renderer.setSize(window.innerWidth,window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+        axis = new THREE.Vector3(0, 1, 0);
+
+        const controls = new OrbitControls(camera,renderer.domElement);
+        controls.addEventListener('change', renderer);
+
+        //lighting
+        directionalLight = new THREE.DirectionalLight(0xffffff,20);
+
+        scene.add(directionalLight);
+
+        //Use GLTFLoader class and use load method to load our model file.
+        let loader = new GLTFLoader();
+        loader.load('models/gltf/item/scene.gltf', function(gltf){
+            const itm = gltf.scene.children[0];
+            itm.scale.set(0.5,0.5,0.5);
+            scene.add(gltf.scene);
+            animate();        
+        
+        });
+
+    }
+
+    function animate() {
+        //This calls the saveAsImage function, saving the # of images indicated by counter
+        renderer.render(scene,camera);
+        if (counter > 0) {
+            saveAsImage();
+            counter-=1;
+        } else {
+            return;
+        }
+        
+        //Helps us get the correct rotation
+        var step = Math.PI * (1/6);
+        camera.position.applyAxisAngle(axis,step);
+        
+
+        directionalLight.position.copy( camera.position );
+        camera.lookAt( scene.position ); // the origin
+        console.log(counter)        
+        requestAnimationFrame(animate);
+    }
+
+    function saveAsImage() {
+        //The function that actually saves the images to the computer
+        var imgData, imgNode;
+
+        try {
+            var strMime = "image/jpeg";
+            imgData = renderer.domElement.toDataURL(strMime);
+
+            //"Test.jpg" can be changed to a more appropriate name, perhaps one that
+            //relates to the name of the GLTF file
+            saveFile(imgData.replace(strMime, strDownloadMime), "test.jpg");
+
+        } catch (e) {
+            console.log(e);
+            return;
+        }
+
+    }
+
+    var saveFile = function (strData, filename) {
+        var link = document.createElement('a');
+        if (typeof link.download === 'string') {
+            document.body.appendChild(link); //Firefox requires the link to be in the body
+            link.download = filename;
+            link.href = strData;
+            link.click();
+            document.body.removeChild(link); //remove the link when done
+        } else {
+            location.replace(uri);
+        }
+    }
+    
+    init();
+    
+    
+
+    
+    
+    
+				
+	</script>
+			
+			
+	</body>
+		
+</html> 
